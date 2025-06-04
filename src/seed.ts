@@ -1,8 +1,7 @@
-// seed.ts
+
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, doc, setDoc } from "firebase/firestore";
 
-// 1. Конфигурация Firebase — замените на свои данные из Firebase Console
 const firebaseConfig = {
   apiKey: "AIzaSyBBeMxWFl4vxTSdE5KfKkpGTLETZ0zuHcA",
   authDomain: "templatemaster-b0e5b.firebaseapp.com",
@@ -13,11 +12,10 @@ const firebaseConfig = {
   measurementId: "G-4MXX86P5QP"
 };
 
-// 2. Инициализация Firebase и Firestore
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 3. Массив тестовых шаблонов
+
 const testTemplates = [
   {
     id: "template1",
@@ -45,7 +43,6 @@ const testTemplates = [
   }
 ];
 
-// 4. Функция для заполнения базы
 const seedTestData = async () => {
   const templatesRef = collection(db, "templates");
 
@@ -61,5 +58,4 @@ const seedTestData = async () => {
   console.log("Seeding completed.");
 };
 
-// 5. Запуск скрипта
 seedTestData().catch(console.error);

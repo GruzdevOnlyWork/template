@@ -1,4 +1,4 @@
-// TemplateCreator.tsx
+
 import React, { useState } from 'react';
 import {
   EditorState,
@@ -89,7 +89,8 @@ const TemplateCreator = ({ template, onBack }) => {
 
   const categories = ['Юридический', 'Финансы', 'Кадры', 'Бизнес', 'Внутренний', 'Маркетинг'];
 
-  const stampUrlFromServer = 'https://www.btgp.ru/images/IMG_8967.jpg';
+  const stampUrlFromServer = '!!!'; 
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   const insertImage = (editorState, src) => {
     const contentState = editorState.getCurrentContent();
@@ -231,7 +232,6 @@ const TemplateCreator = ({ template, onBack }) => {
 
   return (
   <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-    {/* Header */}
     <header className="bg-white/80 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
       <div className="max-w-7xl container px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -257,8 +257,6 @@ const TemplateCreator = ({ template, onBack }) => {
         </div>
       </div>
     </header>
-
-    {/* Main content */}
     <div className="max-w-7xl container px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Настройки шаблона */}
@@ -308,8 +306,6 @@ const TemplateCreator = ({ template, onBack }) => {
               </div>
             </CardContent>
           </Card>
-
-          {/* Вставка плейсхолдеров и штампа */}
           <Card className="bg-white/60 backdrop-blur-sm border-white/20">
             <CardHeader>
               <CardTitle>Вставить плейсхолдеры и штамп</CardTitle>
@@ -351,8 +347,6 @@ const TemplateCreator = ({ template, onBack }) => {
               )}
             </CardContent>
           </Card>
-
-          {/* Отображение текущих плейсхолдеров */}
           {placeholders.length > 0 && (
             <Card className="bg-white/60 backdrop-blur-sm border-white/20">
               <CardHeader>
@@ -374,8 +368,6 @@ const TemplateCreator = ({ template, onBack }) => {
             </Card>
           )}
         </div>
-
-        {/* Редактор */}
         <div className="lg:col-span-2">
           <Card className="bg-white/60 backdrop-blur-sm border-white/20 h-[calc(100vh-200px)] flex flex-col overflow-auto">
             <CardHeader>

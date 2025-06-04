@@ -1,4 +1,4 @@
-/* templateCreator.css */
+
 .wrapper-class {
   max-width: 785px;
   width: 100%;
@@ -34,7 +34,6 @@
   background: #f9f9f9;
 }
 
-/* Адаптив */
 @media (max-width: 768px) {
   .wrapper-class {
     max-width: 100% !important;
