@@ -81,12 +81,12 @@ const TemplateCreator = ({ template, onBack }) => {
   const [placeholders, setPlaceholders] = useState(template?.placeholders || []);
 
   const placeholderTypes = [
-    { type: 'text', label: 'Текстовое поле', icon: Type, placeholder: '{{Текст}}' },
-    { type: 'number', label: 'Число', icon: Hash, placeholder: '{{Номер}}' },
-    { type: 'date', label: 'Дата', icon: Calendar, placeholder: '{{Дата}}' },
-    { type: 'person', label: 'Имя человека', icon: User, placeholder: '{{Имя}}' },
-    { type: 'address', label: 'Адрес', icon: MapPin, placeholder: '{{Адрес}}' },
-    { type: 'currency', label: 'Валюта', icon: DollarSign, placeholder: '{{Деньги}}' },
+    { type: 'text', label: 'Текстовое поле', icon: Type, placeholder: '{{text}}' },
+    { type: 'number', label: 'Число', icon: Hash, placeholder: '{{number}}' },
+    { type: 'date', label: 'Дата', icon: Calendar, placeholder: '{{date}}' },
+    { type: 'person', label: 'Имя человека', icon: User, placeholder: '{{name}}' },
+    { type: 'address', label: 'Адрес', icon: MapPin, placeholder: '{{adress}}' },
+    { type: 'currency', label: 'Валюта', icon: DollarSign, placeholder: '{{currency}}' },
   ];
 
   const categories = ['Юридический', 'Финансы', 'Кадры', 'Бизнес', 'Внутренний', 'Маркетинг'];
