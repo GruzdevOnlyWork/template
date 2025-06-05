@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Plus, Edit, Search, Filter, Clock, Users } from 'lucide-react';
+import { FileText, Plus, Edit, Search, Filter, Clock, Users, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import TemplateCreator from '@/components/TemplateCreator';
 import TemplateFiller from '@/components/TemplateFiller';
 
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from '@/firebase';
+import { toast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<'dashboard' | 'create' | 'edit' | 'fill'>('dashboard');
@@ -17,21 +18,26 @@ const Index = () => {
   const [templates, setTemplates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchTemplates = async () => {
-      setLoading(true);
-      try {
-        const templatesRef = collection(db, "templates");
-        const snapshot = await getDocs(templatesRef);
-        const allTemplates = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setTemplates(allTemplates);
-      } catch (error) {
-        console.error("Error fetching templates:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchTemplates = async () => {
+    setLoading(true);
+    try {
+      const templatesRef = collection(db, "templates");
+      const snapshot = await getDocs(templatesRef);
+      const allTemplates = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setTemplates(allTemplates);
+    } catch (error) {
+      console.error("Error fetching templates:", error);
+      toast({
+        title: "Ошибка загрузки",
+        description: "Не удалось загрузить шаблоны. Попробуйте позже.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchTemplates();
   }, []);
 
@@ -48,6 +54,26 @@ const Index = () => {
   const handleEditTemplate = (template: any) => {
     setSelectedTemplate(template);
     setCurrentView('edit');
+  };
+
+  const handleDeleteTemplate = async (id: string) => {
+    if (!window.confirm('Вы действительно хотите удалить этот шаблон? Это действие нельзя отменить.')) return;
+
+    try {
+      await deleteDoc(doc(db, "templates", id));
+      setTemplates(prev => prev.filter(t => t.id !== id));
+      toast({
+        title: "Шаблон удалён",
+        description: "Шаблон успешно удалён.",
+      });
+    } catch (error) {
+      console.error("Error deleting template:", error);
+      toast({
+        title: "Ошибка удаления",
+        description: "Не удалось удалить шаблон. Попробуйте позже.",
+        variant: "destructive",
+      });
+    }
   };
 
   if (loading) {
@@ -175,6 +201,15 @@ const Index = () => {
                       className="bg-white/60 border-white/20 hover:bg-white/80"
                     >
                       <Edit className="h-3 w-3" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleDeleteTemplate(template.id)}
+                      className="bg-red-600 border-red-600 hover:bg-red-700 hover:border-red-700 text-white"
+                      title="Удалить шаблон"
+                    >
+                      <Trash2 className="h-3 w-3" />
                     </Button>
                   </div>
                 </CardContent>

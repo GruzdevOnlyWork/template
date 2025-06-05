@@ -53,6 +53,7 @@ const MediaComponent = (props) => {
   return null;
 };
 
+
 const mediaBlockRenderer = (block, { onRemoveEntity }) => {
   if (block.getType() === 'atomic') {
     return {
@@ -62,6 +63,7 @@ const mediaBlockRenderer = (block, { onRemoveEntity }) => {
   }
   return null;
 };
+
 
 const TemplateCreator = ({ template, onBack }) => {
   const html = template?.content || 'Начните вводить содержимое документа здесь...\n\nЧтобы добавить поле-заполнитель, используйте кнопки ниже для вставки меток, например {{company_name}} или {{date}}.';
@@ -79,12 +81,12 @@ const TemplateCreator = ({ template, onBack }) => {
   const [placeholders, setPlaceholders] = useState(template?.placeholders || []);
 
   const placeholderTypes = [
-    { type: 'text', label: 'Текстовое поле', icon: Type, placeholder: '{{text_field}}' },
-    { type: 'number', label: 'Число', icon: Hash, placeholder: '{{number_field}}' },
-    { type: 'date', label: 'Дата', icon: Calendar, placeholder: '{{date_field}}' },
-    { type: 'person', label: 'Имя человека', icon: User, placeholder: '{{person_name}}' },
-    { type: 'address', label: 'Адрес', icon: MapPin, placeholder: '{{address}}' },
-    { type: 'currency', label: 'Валюта', icon: DollarSign, placeholder: '{{amount}}' },
+    { type: 'text', label: 'Текстовое поле', icon: Type, placeholder: '{{Текст}}' },
+    { type: 'number', label: 'Число', icon: Hash, placeholder: '{{Номер}}' },
+    { type: 'date', label: 'Дата', icon: Calendar, placeholder: '{{Дата}}' },
+    { type: 'person', label: 'Имя человека', icon: User, placeholder: '{{Имя}}' },
+    { type: 'address', label: 'Адрес', icon: MapPin, placeholder: '{{Адрес}}' },
+    { type: 'currency', label: 'Валюта', icon: DollarSign, placeholder: '{{Деньги}}' },
   ];
 
   const categories = ['Юридический', 'Финансы', 'Кадры', 'Бизнес', 'Внутренний', 'Маркетинг'];
@@ -118,23 +120,23 @@ const TemplateCreator = ({ template, onBack }) => {
   };
 
   const handleInsertPlaceholder = (placeholderType) => {
-    const { placeholder, type, label } = placeholderType;
-    const newEditorState = insertPlaceholder(editorState, placeholder, type, label);
+    const base = placeholderType.placeholder.replace(/[{}]/g, '').trim(); // например "date_field"
+    const uniqueKey = generateUniquePlaceholder(base);
+    const uniquePlaceholder = `{{${uniqueKey}}}`;
+
+    const newEditorState = insertPlaceholder(editorState, uniquePlaceholder, placeholderType.type, placeholderType.label);
     setEditorState(newEditorState);
 
-    if (!placeholders.find((p) => p.placeholder === placeholder)) {
-      setPlaceholders((prev) => [
-        ...prev,
-        {
-          id: Date.now(),
-          type,
-          label,
-          placeholder,
-          required: true,
-        },
-      ]);
-    }
+    setPlaceholders(prev => [...prev, {
+      id: Date.now(),
+      type: placeholderType.type,
+      label: placeholderType.label,
+      placeholder: uniquePlaceholder,
+      required: true,
+    }]);
   };
+
+
 
   const handleAddStamp = () => {
     const newEditorState = insertImage(editorState, stampUrlFromServer);
@@ -147,6 +149,15 @@ const TemplateCreator = ({ template, onBack }) => {
       title: 'Штамп добавлен',
       description: 'Изображение штампа организации добавлено в шаблон.',
     });
+  };
+  const generateUniquePlaceholder = (base) => {
+    let counter = 1;
+    let uniqueKey = `${base}_${counter}`;
+    while (placeholders.find(p => p.placeholder === `{{${uniqueKey}}}`)) {
+      counter++;
+      uniqueKey = `${base}_${counter}`;
+    }
+    return uniqueKey;
   };
 
   const removeEntity = (blockKey) => {
@@ -356,13 +367,22 @@ const TemplateCreator = ({ template, onBack }) => {
               <CardContent>
                 <div className="space-y-2">
                   {placeholders.map((placeholder) => (
-                    <div key={placeholder.id} className="flex items-center justify-between p-2 bg-white/40 rounded-md">
-                      <Badge variant="outline" className="text-xs">
-                        {placeholder.placeholder}
-                      </Badge>
-                      <span className="text-xs text-gray-500">{placeholder.label}</span>
-                    </div>
-                  ))}
+                      <div key={placeholder.id} className="flex items-center justify-between p-2 bg-white/40 rounded-md space-x-2">
+                        <Input
+                          value={placeholder.label}
+                          onChange={(e) => {
+                            const newLabel = e.target.value;
+                            setPlaceholders((prev) =>
+                              prev.map((p) => (p.id === placeholder.id ? { ...p, label: newLabel } : p))
+                            );
+                          }}
+                          className="flex-1 text-xs"
+                        />
+                        <Badge variant="outline" className="text-xs select-none">
+                          {placeholder.placeholder}
+                        </Badge>
+                      </div>
+                    ))}
                 </div>
               </CardContent>
             </Card>
